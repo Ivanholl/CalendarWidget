@@ -7,13 +7,15 @@
         "build-css": "node-sass --include-path scss ./styles/styles.scss ./styles/styles.css",
         "watch-scss": "nodemon -e scss -x \"npm run build-css\"",
         "start": "serve -d -s -l 8080 -c './'",
-        "dev": "npm run build-css & npm run watch-scss & npm run start",
+        "dev": "concurrently --kill-others-on-fail -names --handle-input \"npm:start\" \"npm:watch-scss\" ",        
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Ivan Zhelev",
     "license": "MIT",
     "dependencies": {
         "compile-sass": "^1.1.0",
-        "nodemon": "^2.0.4"
+        "concurrently": "^5.2.0",
+        "nodemon": "^2.0.4",
+        "serve": "^11.3.1"
     }
 }
