@@ -78,7 +78,7 @@ function CalendarWidget(args){
             let event = JSON.parse(localStorage.getItem(hasEvent[0]));
             if (event && moment(dateToCheck, 'YYYY-MM-DD').isSame(event?.date)) {
                 let info = [
-                    $('<div/>').addClass('minus').text('-'),
+                    $('<div/>').addClass('minus').html('-'),
                     $('<div/>').addClass('info')
                     .append(
                         $('<p/>').addClass('info-title').html(event.title),
@@ -120,9 +120,9 @@ function CalendarWidget(args){
             let previousDay = moment(firstDateOfMonth, "YYYY-MM-DD").subtract(i, 'days').date();
 
             this.daysContainer.prepend(
-                $('<div/>').addClass('day')
+                $('<div/>').addClass('day old')
                     .append(
-                        $('<div/>').addClass('day-num old').text(previousDay)
+                        $('<div/>').addClass('day-num').text(previousDay)
                     )
             )
         }
@@ -130,19 +130,23 @@ function CalendarWidget(args){
     }
 
     fillLastWeek = () => {
-        let lastDateOfMonth = `${this.currentYear}-${this.currentMonthInt + 1}-${this.currentMonthNumberOfDays}`;
+        let lastDateOfMonth = `${this.currentYear}-${this.currentMonthInt + 1}-${this.currentMonthNumberOfDays - 1}`;
         let lastWeekDayOfMonth = moment(lastDateOfMonth, "YYYY-MM-DD").weekday() + 1;
-        let daysToAdd = 7 - lastWeekDayOfMonth;
+        let daysToAdd = 6 - lastWeekDayOfMonth;
 
         //if the last week is full we add another row
         if(daysToAdd == 0) daysToAdd = 7;
+        let allShownDates = $('.day').length
+        debugger
+        if (allShownDates < 42) daysToAdd += 7
+
         for (var i = 1; i <= daysToAdd; i++) {
             var nextDay = moment(lastDateOfMonth, "YYYY-MM-DD").add(i, 'days').date();
 
             this.daysContainer.append(
-                $('<div/>').addClass('day')
+                $('<div/>').addClass('day old')
                     .append(
-                        $('<div/>').addClass('day-num old').text(nextDay)
+                        $('<div/>').addClass('day-num').text(nextDay)
                     )
             )
         }
@@ -157,7 +161,7 @@ function CalendarWidget(args){
     changeMonth = (value) => {
         let yearAndMonth = `${this.currentYear}-${this.currentMonthLong}`;
         let newDateToSet = moment(yearAndMonth, 'YYYY-MMMM').add(value, 'months');
-        debugger
+
         this.currentMonthInt = newDateToSet.month();
         this.currentYear = newDateToSet.year();
         this.currentMonthLong = this.monthsArr[this.currentMonthInt]
