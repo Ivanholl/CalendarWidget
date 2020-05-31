@@ -5,9 +5,9 @@
     "main": "index.html",
     "scripts": {
         "build-css": "node-sass --include-path scss ./styles/styles.scss ./styles/styles.css",
-        "watch-css": "nodemon -e scss -x \"npm run build-css\"",
-        "start": "serve -d -s -l 8080 -c \"./\"",
-        "dev": "npm run build-css npm run watch-css npm run start",
+        "watch-scss": "nodemon -e scss -x \"npm run build-css\"",
+        "start": "serve -d -s -l 8080 -c './'",
+        "dev": "npm run build-css & npm run watch-scss & npm run start",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Ivan Zhelev",

@@ -182,7 +182,7 @@ function CalendarWidget(args){
 
 $(document).ready(function() {
 
-    var calendar = new CalendarWidget({
+    const calendar = new CalendarWidget({
         container: '#calendar-container', //mandatory
         locale: ['en', { //optional it uses the browser metadata if not provided
             week: {
