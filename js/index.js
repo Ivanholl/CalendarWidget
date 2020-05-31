@@ -13,9 +13,11 @@ function CalendarWidget(args){
     //some basic constants
     this.monthsArr = moment.months();
     this.weekdaysShortArr = moment.weekdaysShort(true);
-    this.now = moment().date();
-
+    this.dateNow = moment().date();
+    this.monthNow = moment().month();
+    debugger
     //initial data is taken as todays month
+    this.currentFullDate = moment();
     this.currentMonthInt = Number(args.currentMonth) - 1 || moment().month();
     this.currentYear = args.currentYear || moment().year();
     this.currentMonthLong = this.monthsArr[this.currentMonthInt];
@@ -93,21 +95,40 @@ function CalendarWidget(args){
             return noInfo
         }
     }
+    addNthOnHover = () => {
 
+    }
     drawDates = () => {
         this.daysContainer.empty() //some cleanup is nesessery to remove old data  because we have no  two way data binding like with react or other framework
-
+        let dateNth = moment(this.currentFullDate)
         for (var date = 1; date <= this.currentMonthNumberOfDays; date++) {
+            let classToAdd = (this.currentMonthInt == this.monthNow && date == this.dateNow) ? 'today' : '';
+
             this.daysContainer.append(
-                $('<div/>').addClass('day').addClass(date == this.now ? 'today' : '')
+                $('<div/>').addClass('day').addClass(classToAdd)
+                    .attr({dateInt: date })
+                    .attr({dateNth: moment(dateNth, 'YYYY-MM-DD').format('Do') })
+                    .hover(function(){
+                        let dateNthAtribute = $(this).attr('dateNth')
+                        let dateInt = $(this).attr('dateInt')
+
+                        $(this).find('span').html(dateInt + `<div class="nth">${dateNthAtribute.split(dateInt).pop()}</div>`)
+                    })
+                    .mouseleave(function(){
+                        let dateInt = $(this).attr('dateInt')
+                        $(this).find('span').html(dateInt)
+                    })
                     .append(
                         $('<div/>').addClass('day-num')
                             .append(
-                                $('<span/>').text(date),
+                                $('<span/>').html(date),
+                                // $('<span/>').text(moment(dateNth).format('Do')),
                                 checkIfEventOnDate(date)
                             )
                     )
             )
+
+            dateNth.add(1, 'day')
         }
     }
 
@@ -137,7 +158,7 @@ function CalendarWidget(args){
         //if the last week is full we add another row
         if(daysToAdd == 0) daysToAdd = 7;
         let allShownDates = $('.day').length
-        debugger
+
         if (allShownDates < 42) daysToAdd += 7
 
         for (var i = 1; i <= daysToAdd; i++) {
@@ -161,12 +182,14 @@ function CalendarWidget(args){
     changeMonth = (value) => {
         let yearAndMonth = `${this.currentYear}-${this.currentMonthLong}`;
         let newDateToSet = moment(yearAndMonth, 'YYYY-MMMM').add(value, 'months');
-
+        debugger
+        this.currentFullDate = moment(yearAndMonth, 'YYYY-MMMM').add(value, 'months');
         this.currentMonthInt = newDateToSet.month();
         this.currentYear = newDateToSet.year();
         this.currentMonthLong = this.monthsArr[this.currentMonthInt]
         this.currentMonthNumberOfDays = moment(newDateToSet, "YYYY-MMMM").daysInMonth();
         this.storageKeys = Object.keys(localStorage).filter(entry => entry.includes(`-${this.currentMonthInt + 1}-`));
+
 
         drawHeader();
         drawMonth();

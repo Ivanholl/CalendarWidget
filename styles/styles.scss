@@ -146,8 +146,13 @@ body {
                 span {
                     float: left;
                     text-align: left;
-                    font-size: 3rem;
+                    font-size: 2.5rem;
                     line-height: 1em;
+                }
+                .nth {
+                    font-size: 1.8rem;
+                    line-height: 1em;
+                    float: right;
                 }
                 .info {
                     width: 100%;
