@@ -1,0 +1,19 @@
+{
+    "name": "calendar",
+    "version": "1.0.0",
+    "description": "Simple calendar to save notes and events in localStorage.",
+    "main": "index.html",
+    "scripts": {
+        "build-css": "node-sass --include-path scss ./styles/styles.scss ./styles/styles.css",
+        "watch-css": "nodemon -e scss -x \"npm run build-css\"",
+        "start": "serve -d -s -l 8080 -c \"./\"",
+        "dev": "npm run build-css npm run watch-css npm run start",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Ivan Zhelev",
+    "license": "MIT",
+    "dependencies": {
+        "compile-sass": "^1.1.0",
+        "nodemon": "^2.0.4"
+    }
+}

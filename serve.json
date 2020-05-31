@@ -1,0 +1,17 @@
+{
+    "public": "./",
+    "trailingSlash": true,
+    "cleanUrls": [
+        "./**"
+    ],
+    "rewrites": [{
+        "source": "./**",
+        "destination": "/index.html"
+    }],
+    "directoryListing": [
+        "./**",
+        "!./node_modules",
+        "!./*.json",
+        "!../**"
+    ]
+}
