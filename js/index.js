@@ -1,3 +1,6 @@
+// TODO: REFACTOR GLOBAL VARIABLE
+var dateForNewEvent = '';
+
 function CalendarWidget(args){
     if (!args?.container) {
         console.error('Please provide a element for CalendarWidget to attach');
@@ -15,9 +18,10 @@ function CalendarWidget(args){
     this.weekdaysShortArr = moment.weekdaysShort(true);
     this.dateNow = moment().date();
     this.monthNow = moment().month();
-    debugger
+
     //initial data is taken as todays month
     this.currentFullDate = moment();
+    this.currentFullDateForExport = moment();
     this.currentMonthInt = Number(args.currentMonth) - 1 || moment().month();
     this.currentYear = args.currentYear || moment().year();
     this.currentMonthLong = this.monthsArr[this.currentMonthInt];
@@ -58,29 +62,42 @@ function CalendarWidget(args){
             )
         });
     }
-    checkIfEventOnDate = (date) => {
-        // let event = {
-        //     title: "Meeting with the CEO",
-        //     date: moment('2020-05-01',"YYYY-MM-DD"),
-        //     participants: 'Gosho, Tosho, Pesho',
-        //     details: 'New bisiness cards.'
-        // }
+    removeItem = (dateToRemove) => {
+        if (dateToRemove) {
+            let event = JSON.parse(localStorage.getItem(`event_${dateToRemove}` ));
+            debugger
+            if (event && moment(dateToRemove, 'YYYY-MM-DD').isSame(moment(event.date, 'YYYY-MM-DD'))) {
+                var message = `Are you sure you want to delete event_${dateToRemove}`;
 
+                window.confirm(message);
+                if (window.confirm(message)) {
+                    localStorage.removeItem(`event_${dateToRemove}` )
+                    location.reload()
+                }
+            }
+        }
+    }
+    checkIfEventOnDate = (date) => {
         //checking by keys so we don't trigger the storage for
         let dateToCheck = `${this.currentYear}-${this.currentMonthInt + 1}-${date}`;
-        let hasEvent = this.storageKeys.filter(entry => entry.includes(dateToCheck));
+        let hasEvent = this.storageKeys.filter(entry => entry == `event_${dateToCheck}` );
 
         let noInfo = [
-            $('<div/>').addClass('plus').text('+'),
+            $('<div/>').addClass('plus').text('+').click(e => {
+                this.currentFullDateForExport = dateToCheck;
+            }),
             $('<p/>').addClass('info noAdded').html('No Events'),
         ]
 
         if (hasEvent.length) {
             //so far i have place only to show one
             let event = JSON.parse(localStorage.getItem(hasEvent[0]));
-            if (event && moment(dateToCheck, 'YYYY-MM-DD').isSame(event?.date)) {
+            debugger
+            if (event && moment(dateToCheck, 'YYYY-MM-DD').isSame(moment(dateToCheck, 'YYYY-MM-DD'))) {
                 let info = [
-                    $('<div/>').addClass('minus').html('-'),
+                    $('<div/>').addClass('minus').html('-').click(e => {
+                        removeItem(dateToCheck)
+                    }),
                     $('<div/>').addClass('info')
                     .append(
                         $('<p/>').addClass('info-title').html(event.title),
@@ -182,8 +199,9 @@ function CalendarWidget(args){
     changeMonth = (value) => {
         let yearAndMonth = `${this.currentYear}-${this.currentMonthLong}`;
         let newDateToSet = moment(yearAndMonth, 'YYYY-MMMM').add(value, 'months');
-        debugger
+
         this.currentFullDate = moment(yearAndMonth, 'YYYY-MMMM').add(value, 'months');
+        this.currentFullDateForExport = moment(yearAndMonth, 'YYYY-MMMM').add(value, 'months');
         this.currentMonthInt = newDateToSet.month();
         this.currentYear = newDateToSet.year();
         this.currentMonthLong = this.monthsArr[this.currentMonthInt]
@@ -207,9 +225,11 @@ function CalendarWidget(args){
     }();
 }
 
+var calendar;
+
 $(document).ready(function() {
 
-    const calendar = new CalendarWidget({
+    calendar = new CalendarWidget({
         container: '#calendar-container', //mandatory
         locale: ['en', { //optional it uses the browser metadata if not provided
             week: {

@@ -6,8 +6,8 @@
     "scripts": {
         "build-css": "node-sass --include-path scss ./styles/styles.scss ./styles/styles.css",
         "watch-scss": "nodemon -e scss -x \"npm run build-css\"",
-        "start": "serve -d -s -l 8080 -c './'",
-        "dev": "concurrently --kill-others-on-fail -names --handle-input \"npm:start\" \"npm:watch-scss\" ",        
+        "start": "serve -d -l 8080 -c './'",
+        "dev": "concurrently --kill-others-on-fail -names --handle-input \"npm:start\" \"npm:watch-scss\" ",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Ivan Zhelev",
